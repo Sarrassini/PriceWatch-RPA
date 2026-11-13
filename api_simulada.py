@@ -19,6 +19,21 @@ produtos = {
         "produto": "SSD Kingston 480GB",
         "preco": 219.90,
         "moeda": "BRL"
+    },
+    "CONC-004": {
+        "produto": "Webcam Logitech C270",
+        "preco": 109.90,
+        "moeda": "BRL"
+    },
+    "CONC-005": {
+        "produto": "Headset Havit H2002D",
+        "preco": 169.90,
+        "moeda": "BRL"
+    },
+    "CONC-006": {
+        "produto": "Monitor LG 24 polegadas",
+        "preco": 649.90,
+        "moeda": "BRL"
     }
 }
 
@@ -28,7 +43,6 @@ class APIProdutos(BaseHTTPRequestHandler):
 
     def do_GET(self):
 
-        # Verifica se o endereço solicitado é válido
         if not self.path.startswith("/precos/"):
             self.enviar_resposta(
                 {"erro": "Rota não encontrada"},
@@ -36,10 +50,8 @@ class APIProdutos(BaseHTTPRequestHandler):
             )
             return
 
-        # Obtém o identificador do produto
         id_produto = self.path.split("/precos/")[1].split("?")[0]
 
-        # Procura o produto no catálogo fictício
         produto = produtos.get(id_produto)
 
         if produto is None:
@@ -49,7 +61,6 @@ class APIProdutos(BaseHTTPRequestHandler):
             )
             return
 
-        # Retorna os dados do produto encontrado
         self.enviar_resposta(
             {"id": id_produto, **produto},
             200
@@ -61,7 +72,10 @@ class APIProdutos(BaseHTTPRequestHandler):
         resposta = json.dumps(dados).encode("utf-8")
 
         self.send_response(status)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header(
+            "Content-Type",
+            "application/json; charset=utf-8"
+        )
         self.send_header("Content-Length", str(len(resposta)))
         self.end_headers()
 
@@ -73,6 +87,7 @@ servidor = HTTPServer(("127.0.0.1", 8000), APIProdutos)
 
 print("API fictícia iniciada!")
 print("Endereço: http://127.0.0.1:8000")
+print("Produtos disponíveis: 6")
 print("Pressione Ctrl + C para encerrar.")
 
 servidor.serve_forever()
